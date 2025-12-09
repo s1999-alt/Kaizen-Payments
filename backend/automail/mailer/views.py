@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from .models import MailPlan, Recipient, MailNode
 from .serializers import MailPlanSerializer, RecipientSerializer
+from .scheduler import schedule_plan
 
 
 class MailPlanList(APIView):
@@ -24,7 +25,8 @@ class MailPlanCreate(APIView):
 
     serializer = MailPlanSerializer(data=data)
     if serializer.is_valid():
-      serializer.save()
+      plan = serializer.save()
+      schedule_plan(plan)
       return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
   
@@ -59,13 +61,9 @@ class MailPlanUpdate(APIView):
     if not serializer.is_valid():
       return Response(serializer.errors, status=400)
     
-    serializer.save()
-
-    if nodes_data is not None:
-      plan.nodes.all().delete() 
-
-      for node in nodes_data:
-        MailNode.objects.create(plan=plan, **node)
+    plan = serializer.save()
+        
+    schedule_plan(plan)
     return Response({"msg": "Updated successfully"}, status=200)
   
 

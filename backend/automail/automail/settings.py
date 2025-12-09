@@ -131,3 +131,11 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+
+CELERY_BEAT_SCHEDULE = {
+    "run-mail-plans-every-minute": {
+        "task": "mailer.tasks.check_and_run_plans",
+        "schedule": 60.0,
+    }
+}

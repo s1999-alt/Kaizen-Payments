@@ -44,3 +44,11 @@ class MailNode(models.Model):
 
   def __str__(self):
     return f"{self.plan.name} -> Node {self.order}"
+
+
+class MailLog(models.Model):
+  node = models.ForeignKey(MailNode, on_delete=models.CASCADE)
+  recipient = models.EmailField()
+  status = models.CharField(max_length=20)
+  sent_at = models.DateTimeField(auto_now_add=True)
+  error = models.TextField(blank=True)

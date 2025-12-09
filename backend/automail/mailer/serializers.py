@@ -32,7 +32,14 @@ class MailPlanSerializer(serializers.ModelSerializer):
   class Meta:
     model = MailPlan
     fields = ['id', 'name', 'description', 'is_active', 'nodes']
-  
+
+  def validate(self, data):
+    nodes = data.get('nodes', [])
+    orders = [n["order"] for n in nodes]
+    if len(orders) != len(set(orders)):
+      raise serializers.ValidationError("Duplicate node order is not allowed.")
+    return data
+
   def create(self, validated_data):
     nodes = validated_data.pop("nodes")
     plan = MailPlan.objects.create(**validated_data)
@@ -41,3 +48,19 @@ class MailPlanSerializer(serializers.ModelSerializer):
       MailNode.objects.create(plan=plan, **node)
 
     return plan
+
+  def update(self, instance, validated_data):
+    nodes = validated_data.pop("nodes", None)
+
+    # Update basic plan fields
+    for attr, value in validated_data.items():
+      setattr(instance, attr, value)
+    instance.save()
+
+    # Update nodes if included
+    if nodes is not None:
+      instance.nodes.all().delete()
+      for node in nodes:
+        MailNode.objects.create(plan=instance, **node)
+
+    return instance
