@@ -1,14 +1,17 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PlanList from "./pages/PlanList";
+// import PlanBuilder from "./pages/PlanBuilder";
+// import Recipients from "./pages/Recipients";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-    <h1 className="text-3xl font-bold text-blue-500">Hello Tailwind!</h1>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<PlanList />} />
+        {/* <Route path="/plans/create" element={<PlanBuilder />} />
+        <Route path="/plans/:id/edit" element={<PlanBuilder />} />
+        <Route path="/recipients" element={<Recipients />} /> */}
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App
