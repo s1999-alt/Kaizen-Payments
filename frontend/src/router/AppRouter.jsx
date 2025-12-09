@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // import Login from "../pages/Login.jsx";
-import Dashboard from "../pages/Dashboard.jsx";
+// import Dashboard from "../pages/Dashboard.jsx";
 import CreateMailPlan from "../pages/CreateMailPlan.jsx";
 import EditMailPlan from "../pages/EditMailPlan.jsx";
 import { useContext } from "react";
@@ -16,7 +16,7 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        {/* <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} /> */}
         <Route path="/create" element={<PrivateRoute><CreateMailPlan /></PrivateRoute>} />
         <Route path="/edit/:id" element={<PrivateRoute><EditMailPlan /></PrivateRoute>} />
       </Routes>

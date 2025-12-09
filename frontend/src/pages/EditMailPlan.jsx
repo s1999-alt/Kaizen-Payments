@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import MailPlanBuilder from "../components/MailPlanBuilder/MailPlanBuilder.jsx";
 import { updateMailPlan, getMailPlan } from "../api/mailPlans.js";
 import { useParams, useNavigate } from "react-router-dom";
+import MailPlanBuilder from "./MailPlanBuilder.jsx";
 
 export default function EditMailPlan() {
   const { id } = useParams();
