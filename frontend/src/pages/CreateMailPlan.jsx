@@ -21,8 +21,7 @@ export default function CreateMailPlan() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Create Mail Plan</h2>
-      <MailPlanBuilder />
-      {/* Add a Save button and pass nodes + plan info to handleSave */}
+      <MailPlanBuilder onSave={handleSave} />
     </div>
   );
 }
