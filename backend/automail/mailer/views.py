@@ -35,14 +35,21 @@ class MailPlanDetail(APIView):
   permission_classes = [IsAuthenticated]
 
   def get(self, request, pk):
-    plan = MailPlan.objects.get(id=pk)
+    try:
+        plan = MailPlan.objects.get(id=pk, created_by=request.user)
+    except MailPlan.DoesNotExist:
+        return Response({"error": "Plan not found"}, status=404)
+
     serializer = MailPlanSerializer(plan)
     return Response(serializer.data)
   
   def delete(self, request, pk):
-    plan = MailPlan.objects.filter(id=pk)
+    plan = MailPlan.objects.filter(id=pk, created_by=request.user).first()
+    if not plan:
+        return Response({"error": "Plan not found"}, status=404)
+
     plan.delete()
-    return Response({'msg': 'Deleted'}, status=204)
+    return Response(status=204)
 
 
 class MailPlanUpdate(APIView):
@@ -53,20 +60,17 @@ class MailPlanUpdate(APIView):
       plan = MailPlan.objects.get(id=pk, created_by=request.user)
     except MailPlan.DoesNotExist:
       return Response({"error": "Plan not found"}, status=404)
-    
-    data = request.data
-    nodes_data = data.pop("nodes", None)
 
-    serializer = MailPlanSerializer(plan, data=data, partial=True)
+    serializer = MailPlanSerializer(plan, data=request.data)
     if not serializer.is_valid():
       return Response(serializer.errors, status=400)
-    
-    plan = serializer.save()
-        
-    schedule_plan(plan)
-    return Response({"msg": "Updated successfully"}, status=200)
-  
 
+    plan = serializer.save()
+
+    schedule_plan(plan)
+    return Response(MailPlanSerializer(plan).data)
+
+  
 class RecipientList(APIView):
   permission_classes = [IsAuthenticated]
 

@@ -1,6 +1,5 @@
-from .tasks import execute_node
-
 def schedule_plan(plan):
   first_node = plan.nodes.order_by("order").first()
-  if first_node:
-    execute_node.delay(first_node.id)
+  if not first_node:
+    print(f"[Scheduler] Plan {plan.id} has no nodes")
+  return first_node

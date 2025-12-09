@@ -1,7 +1,9 @@
 from celery import shared_task
 from django.core.mail import send_mail
 from .models import MailNode, Recipient, MailPlan, MailLog
+from django.utils import timezone
 
+@shared_task
 def get_next_node(current_node):
   return MailNode.objects.filter(
     plan=current_node.plan,
@@ -83,10 +85,15 @@ def execute_mail_plan(plan_id):
 
 @shared_task
 def check_and_run_plans():
-  active_plans = MailPlan.objects.filter(is_active=True)
+  active_plans = MailPlan.objects.filter(is_active=True, last_executed_at__isnull=True)
+
   for plan in active_plans:
     execute_mail_plan.delay(plan.id)
-  return f"Executed {active_plans.count()} active plans."
+    plan.last_executed_at = timezone.now()
+    plan.save()
+
+  return f"Triggered {active_plans.count()} new plans"
+
 
 
    

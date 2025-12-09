@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from .models import Recipient, MailPlan, MailNode
 
-
 class RecipientSerializer(serializers.ModelSerializer):
   class Meta:
     model = Recipient
     fields = '__all__'
-
 
 class MailNodeSerializer(serializers.ModelSerializer):
   class Meta:
@@ -50,17 +48,29 @@ class MailPlanSerializer(serializers.ModelSerializer):
     return plan
 
   def update(self, instance, validated_data):
-    nodes = validated_data.pop("nodes", None)
+    nodes_data = validated_data.pop("nodes", None)
 
-    # Update basic plan fields
     for attr, value in validated_data.items():
       setattr(instance, attr, value)
     instance.save()
 
-    # Update nodes if included
-    if nodes is not None:
-      instance.nodes.all().delete()
-      for node in nodes:
-        MailNode.objects.create(plan=instance, **node)
+    if nodes_data is not None:
+
+      existing_nodes = {n.id: n for n in instance.nodes.all()}
+
+      for node in nodes_data:
+        node_id = node.get("id", None)
+
+        if node_id and node_id in existing_nodes:
+          node_obj = existing_nodes[node_id]
+          for attr, value in node.items():
+              setattr(node_obj, attr, value)
+          node_obj.save()
+          del existing_nodes[node_id]
+        else:
+            MailNode.objects.create(plan=instance, **node)
+
+      for leftover in existing_nodes.values():
+        leftover.delete()
 
     return instance
