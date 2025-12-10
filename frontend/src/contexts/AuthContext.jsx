@@ -1,22 +1,42 @@
 import { createContext, useState, useEffect } from "react";
+import { logoutUser } from "../api/auth";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("access")
+  );
 
-  const login = (jwt) => {
-    localStorage.setItem("token", jwt);
-    setToken(jwt);
+  const login = (access, refresh, userData) => {
+    localStorage.setItem("access", access);
+    localStorage.setItem("refresh", refresh);
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    setUser(userData);
+    setIsAuthenticated(true);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+  const logout = async () => {
+    try {
+      await logoutUser(); 
+    } catch (err) {
+      console.warn("Backend logout failed, clearing local anyway.");
+    }
+
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    localStorage.removeItem("user");
+
+    setUser(null);
+    setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
