@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getRecipients } from "../../api/recipients.js";
+import { getRecipients } from "../api/recipients.js";
 
 export default function NodeForm({ nodes, setNodes }) {
   const [selectedNodeId, setSelectedNodeId] = useState(null);

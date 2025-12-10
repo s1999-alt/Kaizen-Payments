@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listMailPlans, deleteMailPlan } from "../api/mailPlans";
+import { getMailPlans, deleteMailPlan } from "../api/mailPlans";
 import { useNavigate } from "react-router-dom";
 
 export default function MailPlanList() {
@@ -7,7 +7,7 @@ export default function MailPlanList() {
   const navigate = useNavigate();
 
   const loadPlans = () => {
-    listMailPlans().then((res) => setPlans(res.data));
+    getMailPlans().then((res) => setPlans(res.data));
   };
 
   useEffect(() => {

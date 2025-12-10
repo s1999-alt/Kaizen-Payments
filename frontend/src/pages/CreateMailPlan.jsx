@@ -1,5 +1,5 @@
 import React from "react";
-import MailPlanBuilder from "../components/MailPlanBuilder/MailPlanBuilder.jsx";
+import MailPlanBuilder from "./MailPlanBuilder.jsx";
 import { createMailPlan } from "../api/mailPlans.js";
 import { useNavigate } from "react-router-dom";
 

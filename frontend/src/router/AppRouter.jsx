@@ -17,16 +17,13 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-
+        <Route path="/login" element={<Login />} /> 
 
         <Route path="/mail-plans"element={<PrivateRoute><MailPlanList /></PrivateRoute>}/>
         <Route path="/mail-plans/create" element={ <PrivateRoute><CreateMailPlan/></PrivateRoute>}/>
         <Route path="/mail-plans/:id/edit" element={<PrivateRoute><EditMailPlan /></PrivateRoute>}/>
 
-
         <Route path="/mail-plans/:id" element={<PrivateRoute><MailPlanDetail /></PrivateRoute>}/>
-
 
         <Route path="*" element={<Navigate to="/mail-plans" />} />
       </Routes>
