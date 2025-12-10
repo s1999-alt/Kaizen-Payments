@@ -6,7 +6,9 @@ import ReactFlow, {
   Background,
   useNodesState,
   useEdgesState,
-} from "react-flow-renderer";
+} from "reactflow";
+
+import 'reactflow/dist/style.css';
 
 import NodeForm from "./NodeForm.jsx";
 import RecipientFilter from "./RecipientFilter.jsx";

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import ReactFlow, { MiniMap, Controls } from "react-flow-renderer";
+import ReactFlow, { MiniMap, Controls } from "reactflow"
+import "reactflow/dist/style.css";;
 import { getMailPlan } from "../api/mailPlans";
 
 export default function MailPlanDetail({ planId }) {
