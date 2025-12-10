@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext.jsx";
 
+import Navbar from "../components/Navbar"; 
 import MailPlanList from "../pages/MailPlanList.jsx";
 import MailPlanDetail from "../pages/MailPlanDetail.jsx";
 import CreateMailPlan from "../pages/CreateMailPlan.jsx";
@@ -11,13 +12,16 @@ import Register from "../pages/Register.jsx";
 
 
 const PrivateRoute = ({ children }) => {
-  const { token } = useContext(AuthContext);
-  return token ? children : <Navigate to="/login" />;
+  const { isAuthenticated } = useContext(AuthContext);
+  return isAuthenticated  ? children : <Navigate to="/login" />;
 };
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
+    
+      <Navbar /> 
+
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} /> 

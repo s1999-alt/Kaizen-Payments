@@ -32,6 +32,7 @@ export default function Register() {
         name: form.name,
         email: form.email,
         password: form.password,
+        password2: form.password2,
       });
 
       login(res.data.token);
