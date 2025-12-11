@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
+from django.contrib.auth.models import User
 
 from .models import MailPlan, Recipient, MailNode
 from .serializers import MailPlanSerializer, RecipientSerializer, RegisterSerializer
@@ -20,9 +21,12 @@ class RegisterView(APIView):
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     user = serializer.save()
+    refresh = RefreshToken.for_user(user)
 
     return Response({
       "message": "User registered successfully",
+      "access": str(refresh.access_token),
+      "refresh": str(refresh),
       "user": {
           "id": user.id,
           "username": user.username,
@@ -32,30 +36,36 @@ class RegisterView(APIView):
   
 
 class LoginView(APIView):
-    permission_classes = [AllowAny]
+  permission_classes = [AllowAny]
 
-    def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
+  def post(self, request):
+    email = request.data.get("email")
+    password = request.data.get("password")
 
-        user = authenticate(username=username, password=password)
+    try:
+      user_obj = User.objects.get(email=email)
+      username = user_obj.username
+    except User.DoesNotExist:
+      return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not user:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+    user = authenticate(username=username, password=password)
 
-        refresh = RefreshToken.for_user(user)
+    if not user:
+      return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email
-            }
-        })
+    refresh = RefreshToken.for_user(user)
+
+    return Response({
+      "access": str(refresh.access_token),
+      "refresh": str(refresh),
+      "user": {
+        "id": user.id,
+        "username": user.username,
+        "email": user.email
+      }
+    })
+
     
-
 class MailPlanList(APIView):
   permission_classes = [IsAuthenticated]
 

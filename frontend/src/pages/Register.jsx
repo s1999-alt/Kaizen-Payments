@@ -6,7 +6,7 @@ export default function Register() {
   const { login } = useContext(AuthContext);
 
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     password2: "",
@@ -28,14 +28,14 @@ export default function Register() {
     }
 
     try {
-      const res = await api.post("/auth/register/", {
-        name: form.name,
+      const res = await api.post("/mail/register/", {
+        username: form.username,
         email: form.email,
         password: form.password,
         password2: form.password2,
       });
 
-      login(res.data.token);
+      login(res.data.access, res.data.refresh, res.data.user);
 
       window.location.href = "/mail-plans";
     } catch (err) {
@@ -60,9 +60,9 @@ export default function Register() {
         <input
           className="border p-2 w-full mb-3 rounded"
           type="text"
-          name="name"
-          placeholder="Full Name"
-          value={form.name}
+          name="username"
+          placeholder="Username"
+          value={form.username}
           onChange={handleChange}
         />
 

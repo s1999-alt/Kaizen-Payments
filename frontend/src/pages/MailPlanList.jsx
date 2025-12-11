@@ -45,44 +45,53 @@ export default function MailPlanList() {
         </thead>
 
         <tbody>
-          {plans.map((p) => (
-            <tr key={p.id} className="border">
-              <td className="border p-2">{p.id}</td>
-              <td className="border p-2">{p.name}</td>
-              <td className="border p-2">{p.description}</td>
-              <td className="border p-2">
-                {p.is_active ? (
-                  <span className="text-green-600 font-semibold">Active</span>
-                ) : (
-                  <span className="text-red-500 font-semibold">Inactive</span>
-                )}
-              </td>
-
-              <td className="border p-2 space-x-2">
-                <button
-                  onClick={() => navigate(`/mail-plans/${p.id}`)}
-                  className="px-2 py-1 bg-gray-200 rounded"
-                >
-                  View
-                </button>
-
-                <button
-                  onClick={() => navigate(`/mail-plans/${p.id}/edit`)}
-                  className="px-2 py-1 bg-yellow-400 rounded"
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => handleDelete(p.id)}
-                  className="px-2 py-1 bg-red-500 text-white rounded"
-                >
-                  Delete
-                </button>
+          {plans.length === 0 ? (
+            <tr>
+              <td colSpan="5" className="text-center p-4 text-gray-500">
+                No mail plans found. Create one to get started.
               </td>
             </tr>
-          ))}
+          ) : (
+            plans.map((p) => (
+              <tr key={p.id} className="border">
+                <td className="border p-2">{p.id}</td>
+                <td className="border p-2">{p.name}</td>
+                <td className="border p-2">{p.description}</td>
+                <td className="border p-2">
+                  {p.is_active ? (
+                    <span className="text-green-600 font-semibold">Active</span>
+                  ) : (
+                    <span className="text-red-500 font-semibold">Inactive</span>
+                  )}
+                </td>
+
+                <td className="border p-2 space-x-2">
+                  <button
+                    onClick={() => navigate(`/mail-plans/${p.id}`)}
+                    className="px-2 py-1 bg-gray-200 rounded"
+                  >
+                    View
+                  </button>
+
+                  <button
+                    onClick={() => navigate(`/mail-plans/${p.id}/edit`)}
+                    className="px-2 py-1 bg-yellow-400 rounded"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(p.id)}
+                    className="px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
+
       </table>
     </div>
   );

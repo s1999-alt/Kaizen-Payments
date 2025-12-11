@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import Recipient, MailPlan, MailNode
 from django.contrib.auth.models import User
 
-
 class RegisterSerializer(serializers.ModelSerializer):
   password = serializers.CharField(write_only=True)
   password2 = serializers.CharField(write_only=True)
@@ -10,6 +9,11 @@ class RegisterSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ['id', 'username', 'email', 'password', 'password2']
+  
+  def validate_email(self, value):
+    if User.objects.filter(email=value).exists():
+      raise serializers.ValidationError("Email already exists")
+    return value
 
   def validate(self, data):
     if data['password'] != data['password2']:

@@ -14,9 +14,9 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await api.post("/auth/login/", { email, password });
+      const res = await api.post("/mail/login/", { email, password });
 
-      login(res.data.token);
+      login(res.data.access, res.data.refresh, res.data.user);
 
       window.location.href = "/mail-plans";
     } catch (err) {

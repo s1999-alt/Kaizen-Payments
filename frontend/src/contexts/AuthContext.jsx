@@ -3,8 +3,17 @@ import { logoutUser } from "../api/auth";
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  export const AuthProvider = ({ children }) => {
+    const safeParseUser = () => {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const [user, setUser] = useState(safeParseUser());
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("access")
   );
