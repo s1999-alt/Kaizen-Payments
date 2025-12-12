@@ -41,6 +41,7 @@ class MailNodeSerializer(serializers.ModelSerializer):
   class Meta:
     model = MailNode
     fields = "__all__"
+    read_only_fields = ["plan"] 
  
   def validate(self, data):
     trigger = data.get('trigger_type')
@@ -71,11 +72,11 @@ class MailPlanSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     nodes = validated_data.pop("nodes")
-    plan = MailPlan.objects.create(**validated_data)
+    user = self.context["request"].user 
+    plan = MailPlan.objects.create(created_by=user, **validated_data)
 
     for node in nodes:
       MailNode.objects.create(plan=plan, **node)
-
     return plan
 
   def update(self, instance, validated_data):

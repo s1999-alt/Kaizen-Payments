@@ -82,7 +82,7 @@ class MailPlanCreate(APIView):
     data = request.data
     data["created_by"] = request.user.id
 
-    serializer = MailPlanSerializer(data=data)
+    serializer = MailPlanSerializer(data=data, context={"request": request})
     if serializer.is_valid():
       plan = serializer.save()
       schedule_plan(plan)
@@ -105,7 +105,7 @@ class MailPlanDetail(APIView):
   def delete(self, request, pk):
     plan = MailPlan.objects.filter(id=pk, created_by=request.user).first()
     if not plan:
-        return Response({"error": "Plan not found"}, status=status.HTTP_404_NOT_FOUND)
+      return Response({"error": "Plan not found"}, status=status.HTTP_404_NOT_FOUND)
 
     plan.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

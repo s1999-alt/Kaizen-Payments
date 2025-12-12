@@ -83,16 +83,16 @@ def execute_mail_plan(plan_id):
       execute_node.delay(first_node.id)
   return f"Mail plan {plan.name} started"
 
-@shared_task
-def check_and_run_plans():
-  active_plans = MailPlan.objects.filter(is_active=True, last_executed_at__isnull=True)
+# @shared_task
+# def check_and_run_plans():
+#   active_plans = MailPlan.objects.filter(is_active=True, last_executed_at__isnull=True)
 
-  for plan in active_plans:
-    execute_mail_plan.delay(plan.id)
-    plan.last_executed_at = timezone.now()
-    plan.save()
+#   for plan in active_plans:
+#     execute_mail_plan.delay(plan.id)
+#     plan.last_executed_at = timezone.now()
+#     plan.save()
 
-  return f"Triggered {active_plans.count()} new plans"
+#   return f"Triggered {active_plans.count()} new plans"
 
 
 

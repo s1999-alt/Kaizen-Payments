@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Recipient, MailPlan, MailNode, MailLog
 
-# Register your models here.
+admin.site.register(Recipient)
+admin.site.register(MailPlan)
+admin.site.register(MailNode)
+admin.site.register(MailLog)
