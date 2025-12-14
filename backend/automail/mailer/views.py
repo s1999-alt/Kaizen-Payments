@@ -5,9 +5,11 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from .models import MailPlan, Recipient, MailNode
 from .serializers import MailPlanSerializer, RecipientSerializer, RegisterSerializer
+from .tasks import execute_mail_plan
 from .scheduler import schedule_plan
 
 
@@ -84,10 +86,28 @@ class MailPlanCreate(APIView):
 
     serializer = MailPlanSerializer(data=data, context={"request": request})
     if serializer.is_valid():
-      plan = serializer.save()
-      schedule_plan(plan)
+      serializer.save()
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MailPlanRun(APIView):
+  permission_classes = [IsAuthenticated]
+
+  def post(self, request, pk):
+    try:
+      plan = MailPlan.objects.get(id=pk, created_by=request.user)
+    except MailPlan.DoesNotExist:
+      return Response({"error": "Plan not found"}, status=404)
+
+    if not plan.is_active:
+      return Response({"error": "Plan is inactive"}, status=400)
+
+    execute_mail_plan.delay(plan.id)
+
+    plan.last_executed_at = timezone.now()
+    plan.save(update_fields=["last_executed_at"])
+    return Response({"message": "Mail plan execution started"})
   
 
 class MailPlanDetail(APIView):
@@ -125,8 +145,6 @@ class MailPlanUpdate(APIView):
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     plan = serializer.save()
-
-    schedule_plan(plan)
     return Response(MailPlanSerializer(plan).data)
 
   

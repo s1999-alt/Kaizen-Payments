@@ -3,12 +3,14 @@ from django.core.mail import send_mail
 from .models import MailNode, Recipient, MailPlan, MailLog
 from django.utils import timezone
 
-@shared_task
-def get_next_node(current_node):
+
+def get_next_node(node_id):
+  node = MailNode.objects.get(id=node_id)
   return MailNode.objects.filter(
-    plan=current_node.plan,
-    order__gt=current_node.order
+    plan=node.plan,
+    order__gt=node.order
   ).order_by("order").first()
+
 
 @shared_task
 def send_scheduled_mail(node_id):
@@ -24,8 +26,9 @@ def send_scheduled_mail(node_id):
     recipients = recipients.filter(email__icontains=filters["email"])
 
   if "tags" in filters:
-    tag = filters["tags"]
-    recipients = recipients.filter(tags__contains=[tag])
+    tags = filters["tags"]
+    for tag in tags:
+      recipients = recipients.filter(tags__contains=[tag])
 
   if not recipients.exists():
     return f"No recipients found for node {node_id}"
@@ -52,7 +55,7 @@ def send_scheduled_mail(node_id):
         status="failed",
         error=str(e)
       )
-  next_node = get_next_node(node)
+  next_node = get_next_node(node.id)
   if next_node:
     execute_node.delay(next_node.id)   
   return f"Emails processed for node {node_id}"
@@ -83,16 +86,6 @@ def execute_mail_plan(plan_id):
       execute_node.delay(first_node.id)
   return f"Mail plan {plan.name} started"
 
-# @shared_task
-# def check_and_run_plans():
-#   active_plans = MailPlan.objects.filter(is_active=True, last_executed_at__isnull=True)
-
-#   for plan in active_plans:
-#     execute_mail_plan.delay(plan.id)
-#     plan.last_executed_at = timezone.now()
-#     plan.save()
-
-#   return f"Triggered {active_plans.count()} new plans"
 
 
 

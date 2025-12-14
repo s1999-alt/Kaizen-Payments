@@ -96,7 +96,7 @@ class MailPlanSerializer(serializers.ModelSerializer):
         if node_id and node_id in existing_nodes:
           node_obj = existing_nodes[node_id]
           for attr, value in node.items():
-              setattr(node_obj, attr, value)
+            setattr(node_obj, attr, value)
           node_obj.save()
           del existing_nodes[node_id]
         else:

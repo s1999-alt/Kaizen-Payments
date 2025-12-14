@@ -39,6 +39,9 @@ class MailNode(models.Model):
   body = models.TextField()
 
   recipient_filter = models.JSONField(default=dict)
+  
+  position_x = models.FloatField(default=100)
+  position_y = models.FloatField(default=100)
 
   def __str__(self):
     return f"{self.plan.name} -> Node {self.order}"

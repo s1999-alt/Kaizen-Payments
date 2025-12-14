@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getMailPlans, deleteMailPlan } from "../api/mailPlans";
+import { getMailPlans, deleteMailPlan, runMailPlan } from "../api/mailPlans";
 import { useNavigate } from "react-router-dom";
 
 export default function MailPlanList() {
@@ -78,6 +78,17 @@ export default function MailPlanList() {
                     className="px-2 py-1 bg-yellow-400 rounded"
                   >
                     Edit
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      if (!window.confirm("Run this mail plan now?")) return;
+                      await runMailPlan(p.id);
+                      alert("Mail plan execution started");
+                    }}
+                    className="px-2 py-1 bg-green-600 text-white rounded"
+                  >
+                    Run
                   </button>
 
                   <button
