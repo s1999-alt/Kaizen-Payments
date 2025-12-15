@@ -124,25 +124,32 @@ npm install
 
 ---
 
-## API Endpoints
-🔐 Authentication
-Method	Endpoint	Description
-POST	/mail/register/	Register new user
-POST	/mail/login/	Login user
-POST	/mail/logout/	Logout user
+# API Endpoints
 
-📧 Mail Plans
-Method	Endpoint	Description
-GET	/mail/plans/	List all mail plans of the authenticated user
-POST	/mail/plans/create/	Create a new mail plan with nodes
-GET	/mail/plans/{id}/	Retrieve a specific mail plan
-PUT	/mail/plans/{id}/update/	Update an existing mail plan
-DELETE	/mail/plans/{id}/	Delete a mail plan
-POST	/mail/plans/{id}/run/	Execute a mail plan
+## 🔐 Authentication
 
-👥 Recipients
-Method	Endpoint	Description
-GET	/mail/recipients/	List recipients (supports filtering by email & tag)
+| Method | Endpoint              | Description         |
+|--------|-----------------------|---------------------|
+| POST   | `/mail/register/`     | Register new user   |
+| POST   | `/mail/login/`        | Login user          |
+| POST   | `/mail/logout/`       | Logout user         |
+
+## 📧 Mail Plans
+
+| Method | Endpoint                          | Description                                      |
+|--------|-----------------------------------|--------------------------------------------------|
+| GET    | `/mail/plans/`                    | List all mail plans of the authenticated user    |
+| POST   | `/mail/plans/create/`             | Create a new mail plan with nodes                |
+| GET    | `/mail/plans/{id}/`               | Retrieve a specific mail plan                    |
+| PUT    | `/mail/plans/{id}/update/`        | Update an existing mail plan                     |
+| DELETE | `/mail/plans/{id}/`               | Delete a mail plan                               |
+| POST   | `/mail/plans/{id}/run/`           | Execute a mail plan                              |
+
+## 👥 Recipients
+
+| Method | Endpoint              | Description                               |
+|--------|-----------------------|-------------------------------------------|
+| GET    | `/mail/recipients/`   | List recipients (supports filtering by email & tag) |
 
 
 
